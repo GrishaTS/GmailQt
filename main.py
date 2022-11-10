@@ -157,12 +157,6 @@ class MainWindow:
         self.update.clicked.connect(
             func_for_form_func_with_arg(MainWindow.update_func, self)
         )
-        self.forward.clicked.connect(
-            func_for_form_func_with_arg(MainWindow.forward_func, self)
-        )
-        self.back.clicked.connect(
-            func_for_form_func_with_arg(MainWindow.back_func, self)
-        )
         self.search.clicked.connect(
             func_for_form_func_with_arg(
                 MainWindow.display_mails_func, self, MainWindow.searche_func
