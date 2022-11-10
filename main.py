@@ -22,14 +22,20 @@ from QtDiaologs.mainwindow import MainW
 from QtDiaologs.make_mail import MakeMail
 from QtDiaologs.page_html import PageHtml
 from QtDiaologs.password_authorization import PasswordAutorization
+"""
+импортирую все зависимости и файлы
+все по pep8 (три трипа импортов и по алфавиту)
+"""
 
 
-class Window(QMainWindow):
+class Window(QMainWindow): # Главное окно, распределяющее запросы
     def __init__(self):
         super().__init__()
-        LoginAutorizationWindow.window(self)
+        LoginAutorizationWindow.window(self) # первый запрос 
+                                             # идет на окно ввода логина
 
-    def create_update_account(self):
+    def create_update_account(self): # проверка логина и пароля при создании
+                                     # аккаунта или восстановлении пароля
         info = {
             "code": self.__dict__["code_of_activation"].text(),
             "login": self.__dict__["login_place"].text(),
@@ -56,13 +62,14 @@ class Window(QMainWindow):
                 {"password": info["password1"], "code": ""},
                 {"login": info["login"]}
             )
-            self.main_window(info["login"])
+            self.main_window(info["login"]) # при корректной валидации 
+                                            # на главное окно
         else:
             QtWidgets.QMessageBox.warning(
                 self, "Ошибка", "Неправильный код", QtWidgets.QMessageBox.Ok
             )
 
-    def check_password(self):
+    def check_password(self): # проверка пароля и направлениена главное окно
         info = {
             "login": self.label.text()
             .split(
@@ -89,9 +96,10 @@ class Window(QMainWindow):
         MainWindow.window(self, theme, login)
 
 
-class MainWindow:
+class MainWindow: # главное окно
     @staticmethod
-    def window(self, theme, login):
+    def window(self, theme, login): # смена старого окна на новое
+                                    # и подключени виджетов
         self.hide()
         for i in list(self.__dict__):
             try:
@@ -183,7 +191,7 @@ class MainWindow:
         MainWindow.display_mails_func(self, MainWindow.all_mail_func)
 
     @staticmethod
-    def take_new_letters(self, page=None):
+    def take_new_letters(self, page=None): # новые письма
         letters = PyQtDb("letters")
         if self.flag:
             try:
@@ -205,7 +213,7 @@ class MainWindow:
                 print(e)
 
     @staticmethod
-    def display_mail(self):
+    def display_mail(self): # отображение списка писем
         mail = self.list_of_mails.item(
             self.list_of_mails.currentRow(),
             0
@@ -237,7 +245,7 @@ class MainWindow:
             print(e)
 
     @staticmethod
-    def update_func(self):
+    def update_func(self): # функция обновления писем
         try:
             requests.head("http://www.google.com/", timeout=1)
             MainWindow.take_new_letters(self)
@@ -251,7 +259,7 @@ class MainWindow:
             )
 
     @staticmethod
-    def searche_func(self):
+    def searche_func(self): # сортировка по поиску
         text_for_search = self.search_text.text()
         text_for_search = PyQtDb.replace({"text_for_search": text_for_search})[
             "text_for_search"
@@ -268,7 +276,7 @@ class MainWindow:
                 for j in i
             )
 
-    @staticmethod
+    @staticmethod # отображение писем по сортировке
     def display_mails_func(self, ordering):
         item = self.list_of_mails.horizontalHeaderItem(0)
         if ordering is MainWindow.searche_func:
@@ -320,13 +328,13 @@ class MainWindow:
         self.show()
 
     @staticmethod
-    def color_row(self, row, back, fore):
+    def color_row(self, row, back, fore): # Подсвечивание непрочитанных писем
         for i in range(self.list_of_mails.columnCount()):
             self.list_of_mails.item(row, i).setBackground(back)
             self.list_of_mails.item(row, i).setForeground(fore)
 
     @staticmethod
-    def all_mail_func(self):
+    def all_mail_func(self): # вся почта
         self.all_mail.setStyleSheet(self.selected_style)
         self.incoming.setStyleSheet(self.unselected_style)
         self.sent.setStyleSheet(self.unselected_style)
@@ -335,7 +343,7 @@ class MainWindow:
         )
 
     @staticmethod
-    def incoming_func(self):
+    def incoming_func(self): # входящие
         self.all_mail.setStyleSheet(self.unselected_style)
         self.incoming.setStyleSheet(self.selected_style)
         self.sent.setStyleSheet(self.unselected_style)
@@ -346,8 +354,8 @@ class MainWindow:
             f'and "to_" NOT LIKE "%{self.login}%"))'
         )
 
-    @staticmethod
-    def sent_func(self):
+    @staticmethod 
+    def sent_func(self): # отправленные
         self.all_mail.setStyleSheet(self.unselected_style)
         self.incoming.setStyleSheet(self.unselected_style)
         self.sent.setStyleSheet(self.selected_style)
@@ -358,8 +366,8 @@ class MainWindow:
         )
 
 
-class MakeMailWindow:
-    @staticmethod
+class MakeMailWindow: # окно создания письма
+    @staticmethod # смена окон и подключение виджетов
     def window(self, login, theme, draft=None):
         self.hide()
         for i in list(self.__dict__):
@@ -396,7 +404,7 @@ class MakeMailWindow:
         )
         self.show()
 
-    @staticmethod
+    @staticmethod # открыть черновик
     def return_to_draft(self, theme):
         drafts_of_login = list(
             PyQtDb("drafts").select(
@@ -408,7 +416,7 @@ class MakeMailWindow:
         ]
         MakeMailWindow.window(self, self.login, theme, draft)
 
-    @staticmethod
+    @staticmethod # Отправление письма
     def send_func(self):
         while True:
             try:
@@ -448,7 +456,7 @@ class MakeMailWindow:
                 break
 
     @staticmethod
-    def attach_func(self):
+    def attach_func(self): # выбор файло на отправку в письме
         f_name = QtWidgets.QFileDialog.getOpenFileName(
             self,
             "Выберите файл",
@@ -460,7 +468,7 @@ class MakeMailWindow:
         )
 
     @staticmethod
-    def draft_func(self):
+    def draft_func(self): # письмо в черновик
         recipient = self.recipient.toPlainText()
         snippet = self.snippet.text()
         main_text = self.main_text.toPlainText()
@@ -475,12 +483,12 @@ class MakeMailWindow:
         MainWindow.window(self, self.theme, self.login)
 
     @staticmethod
-    def back_func(self):
+    def back_func(self): # в главное окно
         MainWindow.window(self, self.theme, self.login)
 
 
-class LoginAutorizationWindow:
-    @staticmethod
+class LoginAutorizationWindow: #ввод логина при авторизации
+    @staticmethod 
     def window(self):
         self.hide()
         for i in list(self.__dict__):
@@ -502,7 +510,7 @@ class LoginAutorizationWindow:
         self.show()
 
 
-class PasswordAuthorizationWindow:
+class PasswordAuthorizationWindow: # ввод пароля при авторизации
     @staticmethod
     def window(self):
         login = self.login_place.text()
@@ -536,7 +544,7 @@ class PasswordAuthorizationWindow:
             self.show()
 
 
-class CreateAccountWindow:
+class CreateAccountWindow: # создание аккаунта
     @staticmethod
     def window(self):
         self.hide()
@@ -554,7 +562,7 @@ class CreateAccountWindow:
         self.show()
 
     @staticmethod
-    def check_login(self):
+    def check_login(self): # проверка логина и отправка кода
         login = self.login_place.text()
         if not list(PyQtDb().select(where={"login": login})):
             while True:
@@ -578,7 +586,7 @@ class CreateAccountWindow:
             )
 
 
-class UpdatePasswordWindow:
+class UpdatePasswordWindow: # восстановление пароля
     @staticmethod
     def window(self):
         self.hide()
@@ -597,7 +605,7 @@ class UpdatePasswordWindow:
         self.show()
 
     @staticmethod
-    def check_login(self):
+    def check_login(self): # проверка логина и отправка кода
         login = self.login_place.text()
         if list(PyQtDb().select(where={"login": login})):
             while True:
@@ -621,7 +629,7 @@ class UpdatePasswordWindow:
             )
 
 
-class PageHtmlWindow:
+class PageHtmlWindow: # отображение письма
     @staticmethod
     def window(self, text_of_parts_mail, id_of_mail, login, theme):
         self.hide()
@@ -668,7 +676,7 @@ class PageHtmlWindow:
         self.show()
 
     @staticmethod
-    def next_page(self, text_of_parts_mail):
+    def next_page(self, text_of_parts_mail): # следующая часть письма
         self.html_area.setHtml(text_of_parts_mail[0][0])
         if len(text_of_parts_mail) == 1:
             self.resume.clicked.connect(
@@ -683,7 +691,7 @@ class PageHtmlWindow:
                 )
             )
 
-    @staticmethod
+    @staticmethod # сохранить приложенные файлы
     def save_files(self):
         path = QFileDialog.getExistingDirectory(
             self, "Выберите путь", f"C:\\Users\\{os.getlogin()}"
