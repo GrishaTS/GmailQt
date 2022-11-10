@@ -66,9 +66,7 @@ class Window(QMainWindow):
         info = {
             "login": self.label.text()
             .split(
-                "Вход \
-                 в "
-            )[1]
+                "Вход в ")[1]
             .split("</p></body>")[0],
             "password": self.password1.text(),
         }
