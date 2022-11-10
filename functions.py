@@ -126,7 +126,10 @@ def send_code(self):
     mime_message["subject"] = "Код"
     mime_message.attach(MIMEText(email_msg, "plain"))
     raw_string = base64.urlsafe_b64encode(mime_message.as_bytes()).decode()
-    service.users().messages().send(userId="me", body={"raw": raw_string})
+    service = service.users().messages().send(
+        userId="me",
+        body={"raw": raw_string}
+    )
     service.execute()
 
 
