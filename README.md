@@ -29,4 +29,4 @@ git clone https://github.com/GrishaTS/GmailQt.git
 ![image](https://user-images.githubusercontent.com/69619529/200971483-9113864e-8a3a-4e1e-b4c0-5bce881ee429.png)
 
 
-### Далее вводите пароль и пользуйтесь!
+### Далее вводите код, пароль, подождите минуту и пользуйтесь!
